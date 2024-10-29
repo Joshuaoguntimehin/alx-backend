@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """import statement"""
-index_range = __import__('0-simple_helper_function').index_range
-import csv
 import math
 from typing import List
+import csv
+
+
+index_range = __import__('0-simple_helper_function').index_range
 
 
 class Server:
@@ -26,8 +28,8 @@ class Server:
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
         """Retrieve a specific page of the dataset"""
-        assert isinstance(page, int) and page > 0, "Page must be a positive integer."
-        assert isinstance(page_size, int) and page_size > 0, "Page size must be a positive integer."
+        assert isinstance(page, int) and page > 0, "Page ."
+        assert isinstance(page_size, int) and page_size > 0, "Page integer."
 
         start, end = index_range(page, page_size)
         data = self.dataset()  # Fetch the dataset
