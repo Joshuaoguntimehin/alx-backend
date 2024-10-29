@@ -2,10 +2,11 @@
 """import statement"""
 from base_caching import BaseCaching
 
+
 class LIFOCache(BaseCaching):
     def __init__(self):
         super().__init__()
-    
+
     def put(self, key, item):
         if key is None or item is None:
             return
@@ -13,7 +14,7 @@ class LIFOCache(BaseCaching):
             last_key = next(reversed(self.cache_data))
             print(f'DISCARD: {last_key}')
             del self.cache_data[last_key]
-            
+
         self.cache_data[key] = item
 
     def get(self, key):
