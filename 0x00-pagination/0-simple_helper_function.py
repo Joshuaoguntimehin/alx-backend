@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """import statement"""
 
+
 def index_range(page, page_size: int) -> tuple:
     start_index = (page - 1) * page_size
     end_index = page * page_size
