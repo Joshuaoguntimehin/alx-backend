@@ -1,28 +1,41 @@
 #!/usr/bin/python3
-""" LIFOCache module """
+""" LRUCache module """
 
 from base_caching import BaseCaching
 
 
-class LIFOCache(BaseCaching):
-    """ LIFOCache is a caching system that follows the LIFO algorithm """
+class LRUCache(BaseCaching):
+    """ LRUCache is a caching system that follows the LRU algorithm """
 
     def __init__(self):
         """ Initialize the cache """
         super().__init__()
-        self.last_key = None  # To track the last added key
+        self.access_order = []  # List to track the access order of keys
 
     def put(self, key, item):
-        """ Add an item to the cache following LIFO policy """
+        """ Add an item to the cache following LRU policy """
         if key is not None and item is not None:
+            if key in self.cache_data:
+                # If key already exists, remove it from the access order
+                self.access_order.remove(key)
+
+            # Add the key to the end (most recently used)
+            self.access_order.append(key)
             self.cache_data[key] = item
-            self.last_key = key  # Update the last added key
 
             if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-                # LIFO: Discard the last inserted key
-                del self.cache_data[self.last_key]
-                print(f"DISCARD: {self.last_key}")
+                # LRU: Remove the least recently used key (first in access_order)
+                lru_key = self.access_order.pop(0)
+                del self.cache_data[lru_key]
+                print(f"DISCARD: {lru_key}")
 
     def get(self, key):
-        """ Get an item by key from the cache """
-        return self.cache_data.get(key) if key is not None else None
+        """ Get an item by key from the cache and update access order """
+        if key is None or key not in self.cache_data:
+            return None
+
+        # Update access order to reflect recent usage
+        self.access_order.remove(key)
+        self.access_order.append(key)
+
+        return self.cache_data[key]
