@@ -29,4 +29,3 @@ class FIFOCache(BaseCaching):
     def get(self, key):
         """ Get an item by key from the cache """
         return self.cache_data.get(key) if key is not None else None
-
