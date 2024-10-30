@@ -1,34 +1,41 @@
 #!/usr/bin/python3
-"""import statement"""
+""" MRUCache module """
+
 from base_caching import BaseCaching
 
 
 class MRUCache(BaseCaching):
+    """ MRUCache is a caching system that follows the MRU algorithm """
+
     def __init__(self):
+        """ Initialize the cache """
         super().__init__()
-        self.order = []
+        self.access_order = []  # List to track the order of access
 
     def put(self, key, item):
-        if key is None or item is None:
-            return
+        """ Add an item to the cache following MRU policy """
+        if key is not None and item is not None:
+            if key in self.cache_data:
+                # If key already exists, remove it from the access order
+                self.access_order.remove(key)
 
-        # Add or update the cache and track the order
-        self.cache_data[key] = item
-        if key in self.order:
-            self.order.remove(key)
-        self.order.append(key)
+            # Add the key to the end (most recently used)
+            self.access_order.append(key)
+            self.cache_data[key] = item
 
-        # If the cache exceeds the limit, discard the most recently used item
-        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            mru_key = self.order.pop()  # Most  to be discarded
-            del self.cache_data[mru_key]
-            print(f"DISCARD: {mru_key}")
+            if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+                # MRU: Remove the most recently used key (last in access_order)
+                mru_key = self.access_order.pop()
+                del self.cache_data[mru_key]
+                print(f"DISCARD: {mru_key}")
 
     def get(self, key):
+        """ Get an item by key from the cache and update access order """
         if key is None or key not in self.cache_data:
             return None
 
-        self.order.remove(key)
-        self.order.append(key)
+        # Update access order to reflect recent usage
+        self.access_order.remove(key)
+        self.access_order.append(key)
 
         return self.cache_data[key]
