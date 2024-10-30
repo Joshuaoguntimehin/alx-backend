@@ -1,34 +1,28 @@
 #!/usr/bin/python3
-"""import statement"""
+""" LIFOCache module """
+
 from base_caching import BaseCaching
 
 
-class LRUCache(BaseCaching):
-    """LRUCache class that inherits from BaseCaching."""
+class LIFOCache(BaseCaching):
+    """ LIFOCache is a caching system that follows the LIFO algorithm """
+
     def __init__(self):
-        """Initialize the class by calling the parent class initializer."""
+        """ Initialize the cache """
         super().__init__()
-        self.cache_data = OrderedDict()  # Use
+        self.last_key = None  # To track the last added key
 
     def put(self, key, item):
-        """Assign the item to the key in the cache."""
-        if key is None or item is None:
-            return  # Do nothing if key or item is None
+        """ Add an item to the cache following LIFO policy """
+        if key is not None and item is not None:
+            self.cache_data[key] = item
+            self.last_key = key  # Update the last added key
 
-        # If the key already exists, remove it to update its position later
-        if key in self.cache_data:
-            self.cache_data.pop(key)
-
-        # Add the key-value pair to the cache
-        self.cache_data[key] = item
-
-        # If  size, discard the least recently used item
-        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            # Discard the first item in the OrderedDict (LRU item)
-            lru_key, _ = self.cache_data.popitem(last=False)
-            print(f"DISCARD: {lru_key}")
+            if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+                # LIFO: Discard the last inserted key
+                del self.cache_data[self.last_key]
+                print(f"DISCARD: {self.last_key}")
 
     def get(self, key):
-        """Retrieve the item linked to the key."""
-        if key is None or key not in self.cache_data:
-            return None  # Return None if key is invalid or not found
+        """ Get an item by key from the cache """
+        return self.cache_data.get(key) if key is not None else None
